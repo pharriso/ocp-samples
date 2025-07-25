@@ -1,0 +1,20 @@
+spec:
+  dataImportCronTemplates:
+  - metadata:
+      name: pharriso-rhel9-cron
+      annotations:
+        cdi.kubevirt.io/storage.bind.immediate.requested: "true" 
+    spec:
+      schedule: "*/2 * * * *" 
+      template:
+        spec:
+          source:
+            registry: 
+              url: docker://quay.io/pharriso/rhel9_template:latest
+              secretRef: quay-secret
+          storage:
+            resources:
+              requests:
+                storage: 10Gi
+      garbageCollect: Outdated
+      managedDataSource: pharriso-rhel9

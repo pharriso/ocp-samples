@@ -1,0 +1,91 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    app: rhel9-static-vm
+  name: rhel9-static-vm
+  namespace: virt-vms
+spec:
+  dataVolumeTemplates:
+  - apiVersion: cdi.kubevirt.io/v1beta1
+    kind: DataVolume
+    metadata:
+      creationTimestamp: null
+      name: rhel9-static-vm
+    spec:
+      sourceRef:
+        kind: DataSource
+        name: rhel9-custom
+        namespace: openshift-virtualization-os-images
+      storage:
+        resources:
+          requests:
+            storage: 10Gi
+  running: true
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: small
+        vm.kubevirt.io/os: rhel9
+        vm.kubevirt.io/workload: server
+      labels:
+        kubevirt.io/domain: rhel9-static-vm
+        kubevirt.io/size: small
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: 1
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: rootdisk
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          interfaces:
+          - name: default
+            model: virtio
+            bridge: {}
+          rng: {}
+        features:
+          acpi: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
+        machine:
+          type: pc-q35-rhel9.4.0
+        memory:
+          guest: 2Gi
+        resources: {}
+      networks:
+      - name: default
+        multus:
+          networkName: default/localnet2
+      terminationGracePeriodSeconds: 180
+      volumes:
+      - dataVolume:
+          name: rhel9-static-vm
+        name: rootdisk
+      - cloudInitNoCloud:
+          networkData: |
+            version: 2
+            ethernets:
+              eth0: 
+                addresses:
+                - 192.168.70.101/24
+                gateway4: 192.168.70.1
+                nameservers:
+                  search: [example.com]
+                  addresses: [192.168.70.1]
+          userData: |-
+            #cloud-config
+            user: cloud-user
+            password: Redhat123
+            chpasswd: { expire: False }
+        name: cloudinitdisk

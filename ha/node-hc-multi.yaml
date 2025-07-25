@@ -1,0 +1,33 @@
+apiVersion: remediation.medik8s.io/v1alpha1
+kind: NodeHealthCheck
+metadata:
+  name: worker-node-hc
+spec:
+  minHealthy: 51%
+  escalatingRemediations:
+  - remediationTemplate:
+      apiVersion: fence-agents-remediation.medik8s.io/v1alpha1
+      kind: FenceAgentsRemediationTemplate
+      name: fence-agents-remediation-template-fence-ipmilan
+      namespace: openshift-workload-availability
+    order: 0
+    timeout: 300s
+  - remediationTemplate:
+      apiVersion: self-node-remediation.medik8s.io/v1alpha1
+      kind: SelfNodeRemediationTemplate
+      namespace: openshift-workload-availability
+      name: self-node-remediation-automatic-strategy-template
+    order: 1
+    timeout: 300s
+  selector:
+    matchExpressions:
+      - key: node-role.kubernetes.io/worker
+        operator: Exists
+        values: []
+  unhealthyConditions:
+    - duration: 30s
+      status: 'False'
+      type: Ready
+    - duration: 30s
+      status: Unknown
+      type: Ready

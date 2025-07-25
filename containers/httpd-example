@@ -1,0 +1,13 @@
+oc new-project web
+oc create deployment web --image registry.redhat.io/rhel8/httpd-24:latest
+oc expose deployment/web --port 8080
+oc create route edge web --service web
+
+oc create configmap web-conf --from-file /root/welcome.conf
+oc set volume --add deployment/web --type configmap --configmap-name web-conf --mount-path /etc/httpd/conf.d/welcome.conf  --sub-path welcome.conf
+
+oc set volume --add deployment/web --type persistentVolumeClaim --claim-name web-index --claim-size 1Gi --claim-class ocs-storagecluster-ceph-rbd --mount-path /var/www/html/
+
+
+
+oc set volume --add deployment/web --type persistentVolumeClaim --claim-name web-index --mount-path /var/www/html/

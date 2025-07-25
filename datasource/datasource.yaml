@@ -1,0 +1,15 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataSource
+metadata:
+  labels:
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/managed-by: cdi-controller
+    app.kubernetes.io/part-of: hyperconverged-cluster
+    app.kubernetes.io/version: 4.17.4
+    cdi.kubevirt.io/dataImportCron: rhel9-custom-import-cron
+    instancetype.kubevirt.io/default-instancetype: o1.small
+    instancetype.kubevirt.io/default-preference: rhel.9
+  name: rhel9-custom
+  namespace: openshift-virtualization-os-images
+spec:
+  source: {}

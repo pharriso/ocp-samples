@@ -1,0 +1,20 @@
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  annotations:
+    bmac.agent-install.openshift.io/hostname: controlplane0.agent.example.com
+    inspect.metal3.io: disabled
+  labels:
+    infraenvs.agent-install.openshift.io: agent
+  name: controlplane0.agent.example.com
+  namespace: agent
+spec:
+  automatedCleaningMode: disabled
+  bmc:
+    address: redfish-virtualmedia+http://192.168.50.1:8000/redfish/v1/Systems/496aef45-7363-4ddc-bbc2-a9a3296b6987
+    credentialsName: bmc-controlplane0
+    disableCertificateVerification: true
+  bootMACAddress: 52:54:00:e0:3c:77
+  customDeploy:
+    method: start_assisted_install
+  online: true

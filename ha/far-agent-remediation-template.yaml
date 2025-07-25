@@ -1,0 +1,26 @@
+apiVersion: fence-agents-remediation.medik8s.io/v1alpha1
+kind: FenceAgentsRemediationTemplate
+metadata:
+  annotations:
+    remediation.medik8s.io/multiple-templates-support: 'true'
+  name: fence-agents-remediation-template-fence-ipmilan
+  namespace: openshift-workload-availability
+spec:
+  template:
+    spec:
+      agent: fence_ipmilan
+      nodeparameters:
+        '--ipport':
+          worker0: '6213'
+          worker1: '6214'
+          worker2: '6215'
+      remediationStrategy: ResourceDeletion
+      retrycount: 5
+      retryinterval: 5s
+      sharedparameters:
+        '--action': reboot
+        '--ip': 192.168.50.1
+        '--lanplus': ''
+        '--password': Redhat123
+        '--username': admin
+      timeout: 1m0s

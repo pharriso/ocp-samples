@@ -1,0 +1,24 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataImportCron
+metadata:
+  annotations:
+    cdi.kubevirt.io/storage.bind.immediate.requested: 'true'
+    cdi.kubevirt.io/storage.import.storageClass: ocs-storagecluster-ceph-rbd-virtualization
+  name: rhel9-custom-import-cron
+spec:
+  garbageCollect: Outdated
+  importsToKeep: 3
+  managedDataSource: rhel9-custom
+  schedule: '*/5 * * * * '
+  template:
+    metadata: {}
+    spec:
+      source:
+        registry:
+          url: 'docker://quay.io/pharriso/rhel9_template:latest'
+          secretRef: endpoint-secret
+      storage:
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: ocs-storagecluster-ceph-rbd-virtualization

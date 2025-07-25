@@ -1,0 +1,25 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: ovs-ocp-trunk
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: '' 
+  desiredState:
+    interfaces:
+    - name: ovs-ocp-trunk
+      description: |-
+        A dedicated ovs bridge for external VM traffic
+      type: ovs-bridge
+      state: up
+      bridge:
+        allow-extra-patch-ports: true
+        options:
+          stp: false
+        port:
+        - name: enp9s0
+    ovn:
+      bridge-mappings:
+      - localnet: ovs-ocp-trunk
+        bridge: ovs-ocp-trunk
+        state: present
