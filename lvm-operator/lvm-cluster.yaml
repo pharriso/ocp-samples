@@ -1,0 +1,27 @@
+apiVersion: lvm.topolvm.io/v1alpha1
+kind: LVMCluster
+metadata:
+  name: controlplane0-lvm
+  namespace: openshift-storage
+spec:
+  storage:
+    deviceClasses:
+      - default: true
+        deviceSelector:
+          paths:
+            - /dev/vdb
+        fstype: xfs
+        name: vg1
+        nodeSelector:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - controlplane0
+        thinPoolConfig:
+          chunkSizeCalculationPolicy: Static
+          metadataSizeCalculationPolicy: Host
+          name: thin-pool-1
+          overprovisionRatio: 10
+          sizePercent: 90
