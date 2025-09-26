@@ -1,0 +1,21 @@
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: controlplane0-storage
+spec:
+  nodeSelector: 
+    kubernetes.io/hostname: controlplane0
+  desiredState:
+    interfaces:
+    - name: enp8s0.100 
+      description: VLAN using enp8s0 
+      type: vlan 
+      state: up 
+      ipv4:
+        dhcp: false
+        address:
+        - ip: 192.168.200.20
+          prefix-length: 24
+        enabled: true
+      vlan:
+        base-iface: enp8s0 
+        id: 100
